@@ -3,12 +3,15 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const authRoutes = require('./routes/auth.route');
 const { errorHandler } = require('./middleware/errorHandler');
+const cors = require('cors');
 
 const app = express();
 const port = 3000; 
 
 // Middleware which allows the user to be able to send JSON data as input
 app.use(express.json());
+
+app.use(cors());
 
 // Routes
 app.use('/api', authRoutes);
