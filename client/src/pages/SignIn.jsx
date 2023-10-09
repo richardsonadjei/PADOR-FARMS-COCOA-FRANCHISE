@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +12,7 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,6 +21,9 @@ const SignIn = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
+
+    dispatch(signInStart());
 
     // Make a POST request to the signin route on the server with the form data
     fetch('http://localhost:3000/api/signin', {
@@ -33,12 +39,15 @@ const SignIn = () => {
         setLoading(false);
         console.log(data); // Handle success response
         if (data.success) {
+          dispatch(signInSuccess(data.user)); // Update current user on successful signin
           navigate('/'); // Redirect to home page on successful signin
+        } else {
+          dispatch(signInFailure(data.error)); // Dispatch signin failure with error message
         }
       })
       .catch((error) => {
         setLoading(false);
-        setError(error.message || 'Server error'); // Handle error
+        dispatch(signInFailure(error.message || 'Server error')); // Handle error
       });
   };
 
