@@ -56,10 +56,18 @@ exports.signin = async (req, res, next) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: '8h',
     });
-    // Set the token as a httpOnly cookie
-    res.cookie('token', token, { httpOnly: true, maxAge: 8 * 60 * 60 * 1000 });
+    // Set the token as an httpOnly cookie with an expiration time
+    const expirationTime = new Date().getTime() + 8 * 60 * 60 * 1000; // 8 hours
+    res.cookie('access-token', token, {
+      httpOnly: true,
+      expires: new Date(expirationTime),
+    });
     // Return success response
-    return res.status(200).json({ user: { 
+    return res.status(200).json(
+      
+      { 
+        success: true,
+        user: { 
       fullname: user.fullname,
       username: user.username,
       email: user.email,

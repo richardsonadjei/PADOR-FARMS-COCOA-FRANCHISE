@@ -11,7 +11,10 @@ const port = 3000;
 // Middleware which allows the user to be able to send JSON data as input
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: 'http://localhost:5173', // Change this to your frontend URL
+}));
 
 // Routes
 app.use('/api', authRoutes);
