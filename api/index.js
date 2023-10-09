@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const authRoutes = require('./routes/auth.route');
+const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 const port = 3000; 
@@ -11,6 +12,10 @@ app.use(express.json());
 
 // Routes
 app.use('/api', authRoutes);
+
+
+// Error handling middleware
+app.use(errorHandler);
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
